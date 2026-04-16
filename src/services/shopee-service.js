@@ -49,9 +49,6 @@ export async function fetchOfferFromAffiliateLink(link, listMeta) {
   maxRedirects: 5,
   timeout: 25000
 });
-    timeout: 25000,
-    maxRedirects: 5
-  });
 
   const html = response.data;
   const finalUrl = response.request?.res?.responseUrl || affiliateUrl;
