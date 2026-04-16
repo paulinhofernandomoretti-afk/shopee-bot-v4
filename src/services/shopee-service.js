@@ -49,6 +49,12 @@ export async function fetchOfferFromAffiliateLink(link, listMeta) {
   maxRedirects: 5,
   timeout: 25000
 });
+console.log("URL buscada:", url);
+console.log("Status:", response.status);
+console.log("Final URL:", response.request?.res?.responseUrl || url);
+console.log("HTML início:", String(response.data).slice(0, 500));
+
+const $ = cheerio.load(response.data);
 
   const html = response.data;
   const finalUrl = response.request?.res?.responseUrl || affiliateUrl;
