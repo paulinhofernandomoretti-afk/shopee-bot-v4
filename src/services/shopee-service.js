@@ -39,11 +39,14 @@ function appendSubId(link, subId) {
 
 export async function fetchOfferFromAffiliateLink(link, listMeta) {
   const affiliateUrl = appendSubId(link, listMeta.subId);
-  const response = await axios.get(affiliateUrl, {
-    headers: {
-      'User-Agent': USER_AGENT,
-      'Accept-Language': 'pt-BR,pt;q=0.9,en;q=0.8'
-    },
+  const response = await axios.get(url, {
+  headers: {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+    "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8",
+    "Accept": "text/html,application/xhtml+xml",
+    "Referer": "https://shopee.com.br/"
+  }
+});
     timeout: 25000,
     maxRedirects: 5
   });
