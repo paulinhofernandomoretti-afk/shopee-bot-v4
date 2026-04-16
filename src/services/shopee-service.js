@@ -59,9 +59,7 @@ const html = response.data;
 const finalUrl = response.request?.res?.responseUrl || affiliateUrl;
 const $ = cheerio.load(html);
 
-// 👉 SÓ UMA VEZ
-const $ = cheerio.load(html);
-
+  
   const title = normalizeWhitespace(
     $('meta[property="og:title"]').attr('content') ||
     $('title').text() ||
