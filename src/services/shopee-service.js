@@ -39,7 +39,7 @@ function appendSubId(link, subId) {
 
 export async function fetchOfferFromAffiliateLink(link, listMeta) {
   const affiliateUrl = appendSubId(link, listMeta.subId);
-  const response = await axios.get(url, {
+const response = await axios.get(url, {
   headers: {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
     "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8",
@@ -49,14 +49,17 @@ export async function fetchOfferFromAffiliateLink(link, listMeta) {
   maxRedirects: 5,
   timeout: 25000
 });
+
 console.log("URL buscada:", url);
 console.log("Status:", response.status);
 console.log("Final URL:", response.request?.res?.responseUrl || url);
 console.log("HTML início:", String(response.data).slice(0, 500));
 
-  const html = response.data;
-  const finalUrl = response.request?.res?.responseUrl || affiliateUrl;
-  const $ = cheerio.load(html);
+const html = response.data;
+const finalUrl = response.request?.res?.responseUrl || url;
+
+// 👉 SÓ UMA VEZ
+const $ = cheerio.load(html);
 
   const title = normalizeWhitespace(
     $('meta[property="og:title"]').attr('content') ||
