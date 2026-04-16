@@ -40,65 +40,46 @@ function appendSubId(link, subId) {
 export async function fetchOfferFromAffiliateLink(link, listMeta) {
   const affiliateUrl = appendSubId(link, listMeta.subId);
 
-  const response = await axios.get(affiliateUrl, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
-      "Accept-Language": "pt-BR,pt;q=0.9,en-US;q=0.8",
-      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      "Referer": "https://shopee.com.br/"
-    },
-    maxRedirects: 5,
-    timeout: 25000
-  });
+  function extractIds(url) {
+    const match = url.match(/product\/(\d+)\/(\d+)/);
+    if (!match) return null;
 
-  console.log("URL buscada:", affiliateUrl);
-  console.log("Status:", response.status);
-  console.log("Final URL:", response.request?.res?.responseUrl || affiliateUrl);
-  console.log("HTML início:", String(response.data).slice(0, 500));
-
-  const html = response.data;
-  const finalUrl = response.request?.res?.responseUrl || affiliateUrl;
-  const $ = cheerio.load(html);
-
-  const title = normalizeWhitespace(
-    $('meta[property="og:title"]').attr('content') ||
-    $('title').text() ||
-    $('h1').first().text()
-  );
-
-  const description = normalizeWhitespace(
-    $('meta[property="og:description"]').attr('content') ||
-    $('meta[name="description"]').attr('content') ||
-    $('body').text().slice(0, 1000)
-  );
-
-  const imageUrl = normalizeImage(
-    $('meta[property="og:image"]').attr('content') ||
-    $('img').first().attr('src') ||
-    ''
-  );
-
-  const price = parsePrice(description) || parsePrice($.text());
-  const discount = parseDiscount(description) || parseDiscount($.text());
-  const oldPrice = null;
-
-  if (!title) {
-    return null;
+    return {
+      shopid: match[1],
+      itemid: match[2]
+    };
   }
 
+  const ids = extractIds(affiliateUrl);
+  if (!ids) return null;
+
+  const apiUrl = `https://shopee.com.br/api/v4/item/get?itemid=${ids.itemid}&shopid=${ids.shopid}`;
+
+  const response = await axios.get(apiUrl, {
+    headers: {
+      "User-Agent": "Mozilla/5.0",
+      "Accept": "application/json"
+    }
+  });
+
+  const item = response.data?.data;
+  if (!item) return null;
+
   return {
-    externalId: `${slugify(title)}::${finalUrl}`,
-    title,
-    productUrl: finalUrl,
+    externalId: `${item.itemid}`,
+    title: item.name,
+    productUrl: affiliateUrl,
     affiliateUrl,
-    imageUrl,
+    imageUrl: `https://cf.shopee.com.br/file/${item.image}`,
     campaign: listMeta.name || 'Lista afiliada',
     category: listMeta.category || 'Geral',
     chatId: listMeta.chatId,
     subId: listMeta.subId || '',
-    price,
-    oldPrice,
-    discount
+    price: item.price / 100000,
+    oldPrice: item.price_before_discount
+      ? item.price_before_discount / 100000
+      : null,
+    discount: item.raw_discount || null
   };
 }
 
