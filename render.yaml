@@ -1,0 +1,61 @@
+services:
+  - type: web
+    name: telegram-shopee-bot-v4
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: BASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: WEB_USERNAME
+        sync: false
+      - key: WEB_PASSWORD
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_DEFAULT_CHAT_ID
+        sync: false
+      - key: TELEGRAM_ADMIN_IDS
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-5.4-mini
+      - key: AI_MIN_SCORE
+        value: 75
+      - key: AI_ENABLED
+        value: true
+      - key: CRON_SCHEDULE
+        value: '*/10 * * * *'
+      - key: DRY_RUN
+        value: false
+      - key: DISABLE_SCHEDULER
+        value: false
+      - key: DEFAULT_MIN_PRICE
+        value: 10
+      - key: DEFAULT_MAX_PRICE
+        value: 500
+      - key: DEFAULT_MIN_DISCOUNT
+        value: 20
+      - key: DEFAULT_BLOCKED_KEYWORDS
+        value: usado,reparo,quebrado,defeito,réplica,replica,refurbished
+      - key: SQLITE_PATH
+        value: /var/data/app.sqlite
+      - key: AFFILIATE_LISTS_PATH
+        value: /var/data/affiliate-lists.json
+      - key: LOG_PATH
+        value: /var/data/app.log
+    disk:
+      name: botdata
+      mountPath: /var/data
+      sizeGB: 1

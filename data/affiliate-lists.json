@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Ofertas Eletrônicos",
+    "category": "Eletronicos",
+    "chatId": "-1001234567890",
+    "subId": "telegram_eletronicos",
+    "enabled": true,
+    "links": [
+      "https://s.shopee.com.br/abc123",
+      "https://s.shopee.com.br/def456"
+    ]
+  },
+  {
+    "name": "Ofertas Casa",
+    "category": "Casa",
+    "chatId": "-1001234567890",
+    "subId": "telegram_casa",
+    "enabled": true,
+    "links": [
+      "https://s.shopee.com.br/ghi789"
+    ]
+  }
+]
